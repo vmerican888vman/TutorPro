@@ -82,73 +82,21 @@ export default function Pricing() {
           fontFamily: 'var(--font-heading)', fontWeight: 800,
           fontSize: 'clamp(2rem, 4vw, 2.8rem)', color: 'var(--white)', marginBottom: 12,
         }}>
-          Start free,{' '}
-          <span style={{ color: 'var(--gold)', fontStyle: 'italic' }}>upgrade anytime</span>
+          Your 7-day free trial{' '}
+          <span style={{ color: 'var(--gold)', fontStyle: 'italic' }}>has ended</span>
         </h1>
         <p style={{
           fontFamily: 'var(--font-body)', fontSize: '1rem', color: 'var(--muted)',
           maxWidth: 480, margin: '0 auto 48px',
         }}>
-          No contracts. 7-day money-back guarantee on Pro.
+          Subscribe to keep full access to AI tutoring, practice tests, and progress tracking.
         </p>
 
-        {/* 3 Cards */}
+        {/* 2 Cards */}
         <div className="pricing-grid" style={{
-          display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)',
-          gap: 24, maxWidth: 1020, margin: '0 auto',
+          display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)',
+          gap: 24, maxWidth: 720, margin: '0 auto',
         }}>
-          {/* ── Free ── */}
-          <div style={{
-            background: 'var(--card-bg)', border: '1.5px solid var(--border)',
-            borderRadius: 14, padding: '36px 28px', textAlign: 'left',
-            display: 'flex', flexDirection: 'column',
-          }}>
-            <div style={{
-              fontFamily: 'var(--font-body)', fontWeight: 600,
-              fontSize: '1rem', color: 'var(--muted)', marginBottom: 4,
-            }}>
-              Free
-            </div>
-            <div style={{
-              fontFamily: 'var(--font-heading)', fontWeight: 800,
-              fontSize: '2.5rem', color: 'var(--white)', marginBottom: 4,
-            }}>
-              $0
-            </div>
-            <div style={{
-              fontFamily: 'var(--font-body)', fontSize: '0.9rem',
-              color: 'var(--muted)', marginBottom: 28,
-            }}>
-              See where you stand
-            </div>
-            <div style={{ flex: 1 }}>
-              {[
-                'Full diagnostic assessment',
-                '5 practice questions',
-                'Score breakdown report',
-                'Study plan preview',
-              ].map((f) => (
-                <div key={f} style={{
-                  display: 'flex', alignItems: 'center', marginBottom: 12,
-                  fontFamily: 'var(--font-body)', fontSize: '0.9rem', color: 'var(--muted)',
-                }}>
-                  <CheckIcon />
-                  {f}
-                </div>
-              ))}
-            </div>
-            <Link to="/diagnostic" style={{
-              display: 'block', textAlign: 'center', marginTop: 28,
-              padding: '14px 24px', borderRadius: 100, fontWeight: 600,
-              fontSize: '0.95rem', fontFamily: 'var(--font-body)',
-              textDecoration: 'none', transition: 'var(--transition)',
-              background: 'transparent', color: 'var(--white)',
-              border: '1.5px solid var(--border)',
-            }}>
-              Take Free Diagnostic
-            </Link>
-          </div>
-
           {/* ── Pro Monthly ── */}
           <div style={{
             background: 'var(--card-bg)', border: '1.5px solid var(--gold-border)',

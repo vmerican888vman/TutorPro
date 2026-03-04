@@ -98,8 +98,8 @@ export default function Signup() {
 
   return (
     <AuthLayout
-      title="Create your account"
-      subtitle="Start your SAT & ACT prep journey."
+      title="Start your free trial"
+      subtitle="7 days of full access — no credit card required."
     >
       {error && (
         <div style={{

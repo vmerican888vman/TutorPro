@@ -693,38 +693,46 @@ function Pricing() {
           fontFamily: heading, fontWeight: 800, fontSize: 'clamp(2rem, 4vw, 2.8rem)',
           textAlign: 'center', marginBottom: 12, color: white,
         }}>
-          Start free, <GoldText>upgrade anytime</GoldText>
+          Try free for 7 days, <GoldText>then subscribe</GoldText>
         </h2>
         <p style={{
           fontFamily: body, fontSize: '1rem', color: muted,
           textAlign: 'center', maxWidth: 500, margin: '0 auto 48px',
         }}>
-          No contracts. 7-day money-back guarantee on Pro.
+          Full access for 7 days. No credit card required. Cancel anytime.
         </p>
 
         <div className="grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, maxWidth: 1020, margin: '0 auto' }}>
-          {/* ── Free ── */}
+          {/* ── Free Trial ── */}
           <div style={{
-            background: cardBg, border: `1.5px solid ${border}`, borderRadius: 14, padding: '36px 28px',
-            display: 'flex', flexDirection: 'column',
+            background: cardBg, border: '1.5px solid rgba(16,185,129,0.35)', borderRadius: 14, padding: '36px 28px',
+            display: 'flex', flexDirection: 'column', position: 'relative',
           }}>
-            <div style={{ fontFamily: body, fontWeight: 600, fontSize: '1rem', color: muted, marginBottom: 4 }}>Free</div>
-            <div style={{ fontFamily: heading, fontWeight: 800, fontSize: '2.5rem', color: white, marginBottom: 4 }}>$0</div>
-            <div style={{ fontFamily: body, fontSize: '0.9rem', color: muted, marginBottom: 28 }}>See where you stand</div>
+            <div style={{
+              position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)',
+              background: '#10B981', color: bg, fontSize: '0.75rem', fontWeight: 700,
+              fontFamily: body, padding: '4px 16px', borderRadius: 100,
+              textTransform: 'uppercase', letterSpacing: 1, whiteSpace: 'nowrap',
+            }}>
+              No credit card
+            </div>
+            <div style={{ fontFamily: body, fontWeight: 600, fontSize: '1rem', color: '#10B981', marginBottom: 4 }}>Free Trial</div>
+            <div style={{ fontFamily: heading, fontWeight: 800, fontSize: '2.5rem', color: white, marginBottom: 4 }}>7 Days</div>
+            <div style={{ fontFamily: body, fontSize: '0.9rem', color: muted, marginBottom: 28 }}>Full access — everything included</div>
             <div style={{ flex: 1 }}>
-              {['Full diagnostic assessment', '5 practice questions', 'Score breakdown report', 'Study plan preview'].map((f) => (
+              {['AI tutoring sessions', 'Full practice tests', 'Progress tracking', 'Step-by-step explanations'].map((f) => (
                 <div key={f} style={{ display: 'flex', alignItems: 'center', fontFamily: body, fontSize: '0.9rem', color: muted, marginBottom: 12 }}>
-                  <CheckIcon color="#34D399" />{f}
+                  <CheckIcon color="#10B981" />{f}
                 </div>
               ))}
             </div>
-            <Link to="/diagnostic" style={{
+            <Link to="/signup" style={{
               display: 'block', textAlign: 'center', marginTop: 28,
               padding: '14px 24px', borderRadius: 100, fontWeight: 600, fontSize: '0.95rem',
               fontFamily: body, textDecoration: 'none', transition,
-              background: 'transparent', color: white, border: `1.5px solid ${border}`,
+              background: '#10B981', color: white,
             }}>
-              Take Free Diagnostic
+              Start Free Trial
             </Link>
           </div>
 

@@ -71,6 +71,8 @@ function MasteryCard({ label, color }) {
 export default function Dashboard() {
   const profile = useAuthStore((s) => s.profile)
   const isPro = useAuthStore((s) => s.isPro)
+  const isTrialActive = useAuthStore((s) => s.isTrialActive)
+  const trialDaysRemaining = useAuthStore((s) => s.trialDaysRemaining)
   const fetchProfile = useAuthStore((s) => s.fetchProfile)
   const user = useAuthStore((s) => s.user)
   const [searchParams, setSearchParams] = useSearchParams()
@@ -139,8 +141,38 @@ export default function Dashboard() {
         </p>
       </div>
 
-      {/* Upgrade banner (free users) */}
-      {!isPro() && (
+      {/* Trial active banner */}
+      {isTrialActive() && !profile?.subscription_status?.includes('pro') && (
+        <div style={{
+          background: 'rgba(16,185,129,0.08)', border: '1.5px solid rgba(16,185,129,0.25)',
+          borderRadius: 14, padding: '20px 24px', marginBottom: 28,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          flexWrap: 'wrap', gap: 16,
+        }}>
+          <div>
+            <div style={{
+              fontFamily: 'var(--font-body)', fontWeight: 700,
+              fontSize: '1rem', color: '#10B981', marginBottom: 4,
+            }}>
+              Free Trial Active — {trialDaysRemaining()} day{trialDaysRemaining() === 1 ? '' : 's'} remaining
+            </div>
+            <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.9rem', color: 'var(--muted)' }}>
+              You have full access to all features during your trial.
+            </div>
+          </div>
+          <Link to="/pricing" style={{
+            background: 'var(--gold)', color: 'var(--bg)', fontWeight: 700,
+            fontSize: '0.9rem', padding: '10px 24px', borderRadius: 100,
+            textDecoration: 'none', fontFamily: 'var(--font-body)',
+            whiteSpace: 'nowrap', transition: 'var(--transition)',
+          }}>
+            Subscribe Now &rarr;
+          </Link>
+        </div>
+      )}
+
+      {/* Trial expired banner */}
+      {!isPro() && !isTrialActive() && (
         <div style={{
           background: 'var(--gold-dim)', border: '1.5px solid var(--gold-border)',
           borderRadius: 14, padding: '20px 24px', marginBottom: 28,
@@ -152,10 +184,10 @@ export default function Dashboard() {
               fontFamily: 'var(--font-body)', fontWeight: 700,
               fontSize: '1rem', color: 'var(--gold)', marginBottom: 4,
             }}>
-              Upgrade to Pro
+              Free Trial Ended — Subscribe to Continue
             </div>
             <div style={{ fontFamily: 'var(--font-body)', fontSize: '0.9rem', color: 'var(--muted)' }}>
-              Unlock unlimited AI tutoring, full practice tests, and progress tracking.
+              Your 7-day trial has expired. Subscribe to keep AI tutoring, practice tests, and progress tracking.
             </div>
           </div>
           <Link to="/pricing" style={{

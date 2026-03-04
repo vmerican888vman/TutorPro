@@ -109,7 +109,35 @@ export const useAuthStore = create((set, get) => ({
 
   isPro: () => {
     const { profile } = get()
-    return profile?.subscription_status === 'pro'
+    if (profile?.subscription_status === 'pro') return true
+    // 7-day free trial: check if account was created within the last 7 days
+    if (profile?.created_at) {
+      const createdAt = new Date(profile.created_at)
+      const daysSince = Math.floor((Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24))
+      return daysSince < 7
+    }
+    return false
+  },
+
+  isTrialActive: () => {
+    const { profile } = get()
+    if (profile?.subscription_status === 'pro') return false
+    if (profile?.created_at) {
+      const createdAt = new Date(profile.created_at)
+      const daysSince = Math.floor((Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24))
+      return daysSince < 7
+    }
+    return true
+  },
+
+  trialDaysRemaining: () => {
+    const { profile } = get()
+    if (profile?.created_at) {
+      const createdAt = new Date(profile.created_at)
+      const daysSince = Math.floor((Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24))
+      return Math.max(0, 7 - daysSince)
+    }
+    return 7
   },
 
   isAdmin: () => {

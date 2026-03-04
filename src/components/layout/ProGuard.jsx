@@ -21,13 +21,13 @@ function UpgradePrompt() {
           fontFamily: 'var(--font-heading)', fontWeight: 800,
           fontSize: '1.5rem', color: 'var(--white)', marginBottom: 8,
         }}>
-          Pro Feature
+          Free Trial Ended
         </h2>
         <p style={{
           fontFamily: 'var(--font-body)', fontSize: '0.95rem',
           color: 'var(--muted)', lineHeight: 1.7, marginBottom: 28,
         }}>
-          This feature requires a Pro subscription. Upgrade to unlock unlimited
+          Your 7-day free trial has expired. Subscribe to Pro to continue using
           AI tutoring, full practice tests, and progress tracking.
         </p>
         <Link to="/pricing" style={{
@@ -36,7 +36,7 @@ function UpgradePrompt() {
           borderRadius: 100, textDecoration: 'none',
           fontFamily: 'var(--font-body)', transition: 'var(--transition)',
         }}>
-          Upgrade to Pro — from $31/mo
+          Subscribe to Pro — from $31/mo
         </Link>
         <p style={{
           fontFamily: 'var(--font-body)', fontSize: '0.8rem',

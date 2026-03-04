@@ -73,13 +73,15 @@ const navItems = [
 ]
 
 export default function AppShell() {
-  const { user, profile, signOut } = useAuthStore()
+  const { user, profile, signOut, isPro, isTrialActive, trialDaysRemaining } = useAuthStore()
   const [mobileOpen, setMobileOpen] = useState(false)
 
   // Derive display values with auth metadata fallback
   const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.user_metadata?.name || 'User'
   const displayEmail = profile?.email || user?.email
   const subStatus = profile?.subscription_status || 'free'
+  const trialActive = isTrialActive()
+  const daysLeft = trialDaysRemaining()
 
   const sidebarContent = (
     <>
@@ -108,20 +110,20 @@ export default function AppShell() {
       {(profile || user) && (
         <div style={{ padding: '0 16px', marginBottom: 12 }}>
           <div style={{
-            background: subStatus === 'pro' ? 'var(--gold-dim)' : 'rgba(255,255,255,0.03)',
-            border: `1px solid ${subStatus === 'pro' ? 'var(--gold-border)' : 'var(--border)'}`,
+            background: subStatus === 'pro' ? 'var(--gold-dim)' : trialActive ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)',
+            border: `1px solid ${subStatus === 'pro' ? 'var(--gold-border)' : trialActive ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`,
             borderRadius: 8, padding: '8px 12px',
             display: 'flex', alignItems: 'center', gap: 8,
           }}>
             <div style={{
               width: 8, height: 8, borderRadius: '50%',
-              background: subStatus === 'pro' ? 'var(--gold)' : 'var(--muted)',
+              background: subStatus === 'pro' ? 'var(--gold)' : trialActive ? '#10B981' : '#EF4444',
             }} />
             <span style={{
               fontFamily: 'var(--font-body)', fontSize: '0.8rem', fontWeight: 600,
-              color: subStatus === 'pro' ? 'var(--gold)' : 'var(--muted)',
+              color: subStatus === 'pro' ? 'var(--gold)' : trialActive ? '#10B981' : '#EF4444',
             }}>
-              {subStatus === 'pro' ? 'Pro Plan' : 'Free Plan'}
+              {subStatus === 'pro' ? 'Pro Plan' : trialActive ? `Trial — ${daysLeft}d left` : 'Trial Expired'}
             </span>
           </div>
         </div>

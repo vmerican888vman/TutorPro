@@ -50,7 +50,7 @@ function SettingsInput({ label, value, onChange, type = 'text', disabled = false
 }
 
 export default function Settings() {
-  const { profile, fetchProfile, user } = useAuthStore()
+  const { profile, fetchProfile, user, isTrialActive, trialDaysRemaining } = useAuthStore()
 
   const [fullName, setFullName] = useState(profile?.full_name || '')
   const [saving, setSaving] = useState(false)
@@ -104,6 +104,23 @@ export default function Settings() {
     } catch {
       // Stripe not configured
     }
+  }
+
+  const trialActive = isTrialActive()
+  const daysLeft = trialDaysRemaining()
+
+  const getSubscriptionLabel = () => {
+    if (profile?.subscription_status === 'pro') return 'Pro'
+    if (profile?.subscription_status === 'cancelled') return 'Cancelled'
+    if (trialActive) return `Trial (${daysLeft}d left)`
+    return 'Expired'
+  }
+
+  const getSubscriptionColor = () => {
+    if (profile?.subscription_status === 'pro') return 'var(--gold)'
+    if (profile?.subscription_status === 'cancelled') return 'var(--red)'
+    if (trialActive) return '#10B981'
+    return '#EF4444'
   }
 
   const subscriptionLabel = {
@@ -171,13 +188,13 @@ export default function Settings() {
         }}>
           <div style={{
             width: 8, height: 8, borderRadius: '50%',
-            background: subscriptionColor[status],
+            background: getSubscriptionColor(),
           }} />
           <span style={{
             fontFamily: 'var(--font-body)', fontSize: '0.95rem',
-            fontWeight: 600, color: subscriptionColor[status],
+            fontWeight: 600, color: getSubscriptionColor(),
           }}>
-            {subscriptionLabel[status]} Plan
+            {getSubscriptionLabel()}
           </span>
         </div>
 

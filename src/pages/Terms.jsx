@@ -54,7 +54,7 @@ export default function Terms() {
         </Section>
 
         <Section title="4. Subscription & Billing">
-          <p><strong style={{ color: white }}>Free Tier:</strong> Includes a diagnostic assessment and limited practice questions at no cost.</p>
+          <p><strong style={{ color: white }}>Free Trial:</strong> All new accounts receive a 7-day free trial with full access to all features. No credit card required. After the trial period, a Pro subscription is required to continue using premium features.</p>
           <p style={{ marginTop: 8 }}><strong style={{ color: white }}>Pro Monthly ($39/month):</strong> Billed monthly. You may cancel anytime. Cancellation takes effect at the end of the current billing period.</p>
           <p style={{ marginTop: 8 }}><strong style={{ color: white }}>Pro Yearly ($374/year):</strong> Billed as a one-time annual payment, representing a 20% discount. This plan is non-refundable after the 7-day money-back guarantee period.</p>
           <p style={{ marginTop: 8 }}><strong style={{ color: white }}>7-Day Money-Back Guarantee:</strong> Both Pro plans include a 7-day money-back guarantee. If you are not satisfied within 7 days of your initial purchase, contact us for a full refund.</p>
