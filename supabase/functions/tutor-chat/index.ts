@@ -42,34 +42,58 @@ serve(async (req) => {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
-    // Verify Pro subscription
+    // Check if user has Pro subscription or is within 7-day free trial
     const { data: profile } = await supabase
       .from('profiles')
-      .select('subscription_status')
+      .select('subscription_status, created_at')
       .eq('id', user.id)
       .single()
 
-    if (profile?.subscription_status !== 'pro') {
-      throw new Error('Pro subscription required')
+    const isPro = profile?.subscription_status === 'pro'
+    const createdAt = profile?.created_at ? new Date(profile.created_at) : new Date(user.created_at)
+    const daysSinceCreation = Math.floor((Date.now() - createdAt.getTime()) / (1000 * 60 * 60 * 24))
+    const isTrialActive = daysSinceCreation < 7
+
+    if (!isPro && !isTrialActive) {
+      throw new Error('Your 7-day free trial has expired. Upgrade to Pro for unlimited access.')
     }
 
-    const { conversationId, message, category, questionContext } = await req.json()
+    const body = await req.json()
 
-    // Get conversation history
+    // Support both formats:
+    // iOS app sends: { messages: [...], category, questionContext }
+    // Web app sends: { conversationId, message, category, questionContext }
+    const { category, questionContext } = body
+
     let messages: Array<{ role: string; content: string }> = []
-    if (conversationId) {
-      const { data: conversation } = await supabase
-        .from('tutor_conversations')
-        .select('messages')
-        .eq('id', conversationId)
-        .single()
-      if (conversation) {
-        messages = conversation.messages || []
+
+    if (body.messages && Array.isArray(body.messages)) {
+      // iOS format: full messages array
+      messages = body.messages.map((m: any) => ({
+        role: m.role,
+        content: m.content,
+      }))
+    } else {
+      // Web format: conversationId + single message
+      const { conversationId, message } = body
+      if (conversationId) {
+        const { data: conversation } = await supabase
+          .from('tutor_conversations')
+          .select('messages')
+          .eq('id', conversationId)
+          .single()
+        if (conversation) {
+          messages = conversation.messages || []
+        }
+      }
+      if (message) {
+        messages.push({ role: 'user', content: message })
       }
     }
 
-    // Add user message
-    messages.push({ role: 'user', content: message })
+    if (messages.length === 0) {
+      throw new Error('No messages provided')
+    }
 
     // Build system prompt with optional question context
     let systemPrompt = SYSTEM_PROMPT
@@ -100,14 +124,15 @@ serve(async (req) => {
     // Save updated conversation
     messages.push({ role: 'assistant', content: assistantMessage })
 
-    if (conversationId) {
+    if (body.conversationId) {
       await supabase
         .from('tutor_conversations')
         .update({ messages })
-        .eq('id', conversationId)
+        .eq('id', body.conversationId)
     }
 
-    return new Response(JSON.stringify({ message: assistantMessage, messages }), {
+    // Return both "reply" (for iOS) and "message" (for web) for compatibility
+    return new Response(JSON.stringify({ reply: assistantMessage, message: assistantMessage, messages }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
   } catch (error) {
