@@ -65,8 +65,8 @@ export default function Signup() {
   if (confirmationSent) {
     return (
       <AuthLayout
-        title="Check your email"
-        subtitle={`We sent a confirmation link to ${email}`}
+        title="Verify your email"
+        subtitle={`We sent a verification link to ${email}`}
       >
         <div style={{ textAlign: 'center' }}>
           <div style={{
@@ -79,10 +79,16 @@ export default function Signup() {
           </div>
           <p style={{
             fontFamily: 'var(--font-body)', fontSize: '0.95rem',
-            color: 'var(--muted)', lineHeight: 1.7, marginBottom: 24,
+            color: 'var(--muted)', lineHeight: 1.7, marginBottom: 8,
           }}>
-            Click the link in your email to confirm your account.
-            Then come back here to log in.
+            Click the link in your email to verify your account and start your 7-day free trial.
+          </p>
+          <p style={{
+            fontFamily: 'var(--font-body)', fontSize: '0.85rem',
+            color: 'var(--muted)', lineHeight: 1.6, marginBottom: 24,
+          }}>
+            Sent from <span style={{ color: 'var(--gold)' }}>support@tutorpro.ai</span>
+            {' '}&mdash; check your spam folder if you don't see it.
           </p>
           <Link to="/login" style={{
             display: 'inline-block', background: 'var(--gold)', color: 'var(--bg)',
