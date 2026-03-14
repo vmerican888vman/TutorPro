@@ -66,6 +66,7 @@ function Nav() {
 
         <div className="nav-links" style={{ display: 'flex', alignItems: 'center', gap: 32 }}>
           <a href="#pricing" style={{ color: muted, textDecoration: 'none', fontSize: '0.95rem', fontWeight: 500, fontFamily: body, transition }}>Pricing</a>
+          <Link to="/blog" style={{ color: muted, textDecoration: 'none', fontSize: '0.95rem', fontWeight: 500, fontFamily: body, transition }}>Blog</Link>
           <Link to="/diagnostic" style={{ color: muted, textDecoration: 'none', fontSize: '0.95rem', fontWeight: 500, fontFamily: body, transition }}>Free Diagnostic</Link>
           <Link to="/login" style={{ color: muted, textDecoration: 'none', fontSize: '0.95rem', fontWeight: 500, fontFamily: body, transition }}>Log In</Link>
           <Link to="/signup" style={{
