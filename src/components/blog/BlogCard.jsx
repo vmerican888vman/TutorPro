@@ -36,9 +36,9 @@ export default function BlogCard({ post }) {
         e.currentTarget.style.transform = 'translateY(0)'
       }}
     >
-      {post.tags?.length > 0 && (
+      {post.keywords?.length > 0 && (
         <div style={{ display: 'flex', gap: 8, marginBottom: 12, flexWrap: 'wrap' }}>
-          {post.tags.slice(0, 3).map(tag => (
+          {post.keywords.slice(0, 3).map(tag => (
             <span key={tag} style={{
               background: goldDim, color: gold, fontSize: '0.75rem',
               fontWeight: 600, padding: '4px 10px', borderRadius: 100,
@@ -57,13 +57,13 @@ export default function BlogCard({ post }) {
         {post.title}
       </h3>
 
-      {post.description && (
+      {post.meta_description && (
         <p style={{
           fontFamily: body, fontSize: '0.9rem', color: muted,
           lineHeight: 1.6, marginBottom: 16,
           display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden',
         }}>
-          {post.description}
+          {post.meta_description}
         </p>
       )}
 

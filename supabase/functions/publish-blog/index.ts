@@ -37,7 +37,7 @@ serve(async (req) => {
 
   try {
     const body = await req.json()
-    const { title, content, description, tags, author, meta_title, meta_description, featured_image, status } = body
+    const { title, content, keywords, category, topic, meta_description, author, status } = body
 
     if (!title || !content) {
       return new Response(JSON.stringify({ error: 'title and content are required' }), {
@@ -56,17 +56,21 @@ serve(async (req) => {
       slug = `${baseSlug}-${counter++}`
     }
 
+    // Count words
+    const word_count = content.split(/\s+/).filter(Boolean).length
+
     const isPublished = status === 'published'
     const { data, error } = await supabase.from('blog_posts').insert({
       title,
       slug,
       content,
-      description: description || null,
-      tags: tags || [],
+      site: 'tutorpro',
+      keywords: keywords || [],
+      category: category || null,
+      topic: topic || null,
       author: author || 'TutorPro Team',
-      meta_title: meta_title || title,
-      meta_description: meta_description || description || null,
-      featured_image: featured_image || null,
+      meta_description: meta_description || null,
+      word_count,
       status: isPublished ? 'published' : 'draft',
       published_at: isPublished ? new Date().toISOString() : null,
     }).select('id, slug').single()

@@ -3,13 +3,13 @@ import { supabase } from './supabase'
 export async function fetchPublishedPosts({ limit = 20, offset = 0, tag } = {}) {
   let query = supabase
     .from('blog_posts')
-    .select('id, title, slug, description, tags, author, published_at, meta_title, meta_description, featured_image', { count: 'exact' })
+    .select('id, title, slug, meta_description, keywords, category, author, published_at', { count: 'exact' })
     .eq('status', 'published')
     .order('published_at', { ascending: false })
     .range(offset, offset + limit - 1)
 
   if (tag) {
-    query = query.contains('tags', [tag])
+    query = query.contains('keywords', [tag])
   }
 
   const { data, error, count } = await query

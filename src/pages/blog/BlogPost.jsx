@@ -135,12 +135,11 @@ export default function BlogPost() {
   return (
     <>
       <SEOHead
-        title={post.meta_title || post.title}
-        description={post.meta_description || post.description || post.title}
+        title={post.title}
+        description={post.meta_description || post.title}
         url={`https://tutorpro.ai/blog/${post.slug}`}
         type="article"
         publishedAt={post.published_at}
-        image={post.featured_image}
       />
       <BlogNav />
 
@@ -156,9 +155,9 @@ export default function BlogPost() {
           </nav>
 
           {/* Tags */}
-          {post.tags?.length > 0 && (
+          {post.keywords?.length > 0 && (
             <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap' }}>
-              {post.tags.map(tag => (
+              {post.keywords.map(tag => (
                 <Link
                   key={tag}
                   to={`/blog?tag=${encodeURIComponent(tag)}`}
