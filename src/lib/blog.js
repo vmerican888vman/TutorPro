@@ -5,6 +5,7 @@ export async function fetchPublishedPosts({ limit = 20, offset = 0, tag } = {}) 
     .from('blog_posts')
     .select('id, title, slug, meta_description, keywords, category, author, published_at', { count: 'exact' })
     .eq('status', 'published')
+    .eq('site', 'tutorpro')
     .order('published_at', { ascending: false })
     .range(offset, offset + limit - 1)
 
@@ -23,6 +24,7 @@ export async function fetchPostBySlug(slug) {
     .select('*')
     .eq('slug', slug)
     .eq('status', 'published')
+    .eq('site', 'tutorpro')
     .single()
 
   if (error) throw error
