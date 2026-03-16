@@ -65,7 +65,7 @@ serve(async (req) => {
     // Web app sends: { conversationId, message, category, questionContext }
     const { category, questionContext } = body
 
-    let messages: Array<{ role: string; content: string }> = []
+    let messages: Array<{ role: string; content: any }> = []
 
     if (body.messages && Array.isArray(body.messages)) {
       // iOS format: full messages array
@@ -75,7 +75,7 @@ serve(async (req) => {
       }))
     } else {
       // Web format: conversationId + single message
-      const { conversationId, message } = body
+      const { conversationId, message, image } = body
       if (conversationId) {
         const { data: conversation } = await supabase
           .from('tutor_conversations')
@@ -86,7 +86,21 @@ serve(async (req) => {
           messages = conversation.messages || []
         }
       }
-      if (message) {
+      if (image) {
+        // Image uploaded from web — send as vision message to Claude
+        const userContent: any[] = [
+          {
+            type: 'image',
+            source: { type: 'base64', media_type: image.mediaType || 'image/png', data: image.data },
+          },
+        ]
+        if (message) {
+          userContent.push({ type: 'text', text: message })
+        } else {
+          userContent.push({ type: 'text', text: 'Please read this question from the image and help me solve it step by step.' })
+        }
+        messages.push({ role: 'user', content: userContent })
+      } else if (message) {
         messages.push({ role: 'user', content: message })
       }
     }

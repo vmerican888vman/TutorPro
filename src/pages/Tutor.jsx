@@ -31,7 +31,7 @@ function TypingIndicator() {
 }
 
 /* ── Message bubble ── */
-function MessageBubble({ role, content }) {
+function MessageBubble({ role, content, imagePreview }) {
   const isUser = role === 'user'
 
   return (
@@ -59,7 +59,16 @@ function MessageBubble({ role, content }) {
         fontFamily: 'var(--font-body)', fontSize: '0.9rem',
         color: isUser ? 'var(--white)' : 'rgba(250,250,249,0.9)',
       }}>
-        {isUser ? <p style={{ lineHeight: 1.6, margin: 0 }}>{content}</p> : renderContent(content)}
+        {isUser && imagePreview && (
+          <img src={imagePreview} alt="Uploaded question" style={{
+            maxWidth: '100%', maxHeight: 300, borderRadius: 8,
+            marginBottom: content ? 8 : 0, display: 'block',
+          }} />
+        )}
+        {isUser
+          ? content && <p style={{ lineHeight: 1.6, margin: 0 }}>{content}</p>
+          : renderContent(content)
+        }
       </div>
     </div>
   )
@@ -154,8 +163,10 @@ export default function Tutor() {
 
   const [input, setInput] = useState('')
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [pendingImage, setPendingImage] = useState(null) // { data, mediaType, preview }
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
+  const fileInputRef = useRef(null)
 
   // Load conversations on mount
   useEffect(() => {
@@ -170,10 +181,57 @@ export default function Tutor() {
   const handleSend = async (e) => {
     e.preventDefault()
     const text = input.trim()
-    if (!text || sending) return
+    const image = pendingImage
+    if ((!text && !image) || sending) return
     setInput('')
-    await sendMessage(user.id, text)
+    setPendingImage(null)
+    await sendMessage(user.id, text || '', undefined, image ? { data: image.data, mediaType: image.mediaType } : undefined)
     inputRef.current?.focus()
+  }
+
+  const [dragging, setDragging] = useState(false)
+  const dragCounter = useRef(0)
+
+  const processFile = (file) => {
+    if (!file?.type?.startsWith('image/')) return
+    const reader = new FileReader()
+    reader.onload = () => {
+      const base64 = reader.result.split(',')[1]
+      setPendingImage({ data: base64, mediaType: file.type, preview: reader.result })
+    }
+    reader.readAsDataURL(file)
+  }
+
+  const handlePhotoUpload = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    e.target.value = ''
+    processFile(file)
+  }
+
+  const handleDragEnter = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    dragCounter.current++
+    setDragging(true)
+  }
+  const handleDragLeave = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    dragCounter.current--
+    if (dragCounter.current === 0) setDragging(false)
+  }
+  const handleDragOver = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+  }
+  const handleDrop = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragging(false)
+    dragCounter.current = 0
+    const file = e.dataTransfer?.files?.[0]
+    if (file) processFile(file)
   }
 
   const handleNewChat = () => {
@@ -260,10 +318,36 @@ export default function Tutor() {
       )}
 
       {/* ── Main chat area ── */}
-      <div style={{
-        flex: 1, display: 'flex', flexDirection: 'column',
-        minWidth: 0, background: 'var(--bg-light)',
-      }}>
+      <div
+        onDragEnter={handleDragEnter}
+        onDragLeave={handleDragLeave}
+        onDragOver={handleDragOver}
+        onDrop={handleDrop}
+        style={{
+          flex: 1, display: 'flex', flexDirection: 'column',
+          minWidth: 0, background: 'var(--bg-light)', position: 'relative',
+        }}
+      >
+        {/* Drop zone overlay */}
+        {dragging && (
+          <div style={{
+            position: 'absolute', inset: 0, zIndex: 100,
+            background: 'rgba(0,0,0,0.7)', display: 'flex',
+            flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            border: '3px dashed var(--gold)', borderRadius: 12, margin: 8,
+          }}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+            <p style={{ color: 'var(--gold)', fontFamily: 'var(--font-body)', fontSize: '1.1rem', fontWeight: 600, marginTop: 12 }}>
+              Drop image to scan
+            </p>
+            <p style={{ color: 'var(--muted)', fontFamily: 'var(--font-body)', fontSize: '0.85rem', marginTop: 4 }}>
+              We'll extract the text using OCR
+            </p>
+          </div>
+        )}
         {/* Top bar: category selector + mobile menu */}
         <div style={{
           padding: '12px 20px', borderBottom: '1px solid var(--border)',
@@ -321,7 +405,7 @@ export default function Tutor() {
           ) : (
             <>
               {messages.map((msg, i) => (
-                <MessageBubble key={i} role={msg.role} content={msg.content} />
+                <MessageBubble key={i} role={msg.role} content={msg.content} imagePreview={msg.imagePreview} />
               ))}
               {sending && (
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: 16 }}>
@@ -358,20 +442,76 @@ export default function Tutor() {
           </div>
         )}
 
+        {/* Image preview */}
+        {pendingImage && (
+          <div style={{
+            padding: '8px 20px', borderTop: '1px solid var(--border)',
+            background: 'var(--bg-light)', display: 'flex', alignItems: 'center', gap: 10,
+          }}>
+            <img src={pendingImage.preview} alt="Upload preview" style={{
+              width: 60, height: 60, objectFit: 'cover', borderRadius: 8,
+              border: '1px solid var(--border)',
+            }} />
+            <span style={{ fontFamily: 'var(--font-body)', fontSize: '0.8rem', color: 'var(--muted)', flex: 1 }}>
+              Image attached — add a message or send directly
+            </span>
+            <button
+              type="button"
+              onClick={() => setPendingImage(null)}
+              style={{
+                background: 'none', border: 'none', cursor: 'pointer', padding: 4,
+                color: 'var(--muted)',
+              }}
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+        )}
+
         {/* Input bar */}
         <form
           onSubmit={handleSend}
           style={{
-            padding: '16px 20px', borderTop: '1px solid var(--border)',
+            padding: '16px 20px', borderTop: pendingImage ? 'none' : '1px solid var(--border)',
             display: 'flex', gap: 10, background: 'var(--bg-light)',
+            alignItems: 'center',
           }}
         >
+          {/* Hidden file input */}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            onChange={handlePhotoUpload}
+            style={{ display: 'none' }}
+          />
+          {/* Upload photo button */}
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={sending}
+            title="Upload a photo"
+            style={{
+              width: 44, height: 44, borderRadius: '50%',
+              background: 'var(--bg)', border: '1.5px solid var(--border)',
+              cursor: sending ? 'default' : 'pointer',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexShrink: 0, transition: 'var(--transition)',
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          </button>
           <input
             ref={inputRef}
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder={sending ? 'Tutor is thinking...' : 'Ask your tutor anything...'}
+            placeholder={sending ? 'Tutor is thinking...' : pendingImage ? 'Add a message (optional)...' : 'Ask your tutor anything...'}
             disabled={sending}
             style={{
               flex: 1, padding: '12px 18px', borderRadius: 100,
@@ -385,17 +525,17 @@ export default function Tutor() {
           />
           <button
             type="submit"
-            disabled={sending || !input.trim()}
+            disabled={sending || (!input.trim() && !pendingImage)}
             style={{
               width: 44, height: 44, borderRadius: '50%',
-              background: input.trim() && !sending ? 'var(--gold)' : 'rgba(255,255,255,0.06)',
-              border: 'none', cursor: input.trim() && !sending ? 'pointer' : 'default',
+              background: (input.trim() || pendingImage) && !sending ? 'var(--gold)' : 'rgba(255,255,255,0.06)',
+              border: 'none', cursor: (input.trim() || pendingImage) && !sending ? 'pointer' : 'default',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               flexShrink: 0, transition: 'var(--transition)',
             }}
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-              stroke={input.trim() && !sending ? 'var(--bg)' : 'var(--muted)'}
+              stroke={(input.trim() || pendingImage) && !sending ? 'var(--bg)' : 'var(--muted)'}
               strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
             >
               <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>

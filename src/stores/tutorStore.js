@@ -51,7 +51,7 @@ export const useTutorStore = create((set, get) => ({
     return data
   },
 
-  sendMessage: async (userId, text, questionContext) => {
+  sendMessage: async (userId, text, questionContext, image) => {
     const { activeConversationId, category } = get()
 
     // If no active conversation, create one
@@ -63,7 +63,12 @@ export const useTutorStore = create((set, get) => ({
     }
 
     // Optimistically add user message
-    const userMsg = { role: 'user', content: text, timestamp: new Date().toISOString() }
+    const userMsg = {
+      role: 'user',
+      content: text || (image ? 'Uploaded a photo' : ''),
+      imagePreview: image ? `data:${image.mediaType};base64,${image.data}` : undefined,
+      timestamp: new Date().toISOString(),
+    }
     set((state) => ({
       messages: [...state.messages, userMsg],
       sending: true,
@@ -76,6 +81,7 @@ export const useTutorStore = create((set, get) => ({
         message: text,
         category,
         questionContext,
+        image,
       })
 
       const assistantMsg = {

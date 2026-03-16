@@ -50,7 +50,20 @@ function UpgradePrompt() {
 }
 
 export default function ProGuard({ children }) {
-  const isPro = useAuthStore((s) => s.isPro)
+  const profile = useAuthStore((s) => s.profile)
+  const loading = useAuthStore((s) => s.loading)
+
+  // Wait for profile to load before deciding
+  if (loading || !profile) return null
+
+  const isPro = () => {
+    if (profile.subscription_status === 'pro') return true
+    if (profile.created_at) {
+      const daysSince = Math.floor((Date.now() - new Date(profile.created_at).getTime()) / (1000 * 60 * 60 * 24))
+      return daysSince < 7
+    }
+    return false
+  }
 
   if (!isPro()) {
     return <UpgradePrompt />
