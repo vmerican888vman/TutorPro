@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import SEO from '../components/SEO'
+import SEOHead from '../components/blog/SEOHead'
 import { blogPosts } from '../data/blog/index'
 
 const categories = [
@@ -106,10 +106,10 @@ export default function Blog() {
 
   return (
     <>
-      <SEO
+      <SEOHead
         title="SAT & ACT Prep Blog"
         description="Expert SAT and ACT prep guides, study tips, score improvement strategies, and test-taking advice from TutorPro.ai."
-        path="/blog"
+        url="https://tutorpro.ai/blog"
       />
 
       <div style={{

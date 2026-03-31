@@ -28,8 +28,8 @@ const Privacy = lazy(() => import('./pages/Privacy'))
 const Terms = lazy(() => import('./pages/Terms'))
 const Contact = lazy(() => import('./pages/Contact'))
 const Admin = lazy(() => import('./pages/Admin'))
-const BlogIndex = lazy(() => import('./pages/blog/BlogIndex'))
-const BlogPost = lazy(() => import('./pages/blog/BlogPost'))
+const BlogIndex = lazy(() => import('./pages/Blog'))
+const BlogPost = lazy(() => import('./pages/BlogPost'))
 
 function PageLoader() {
   return (

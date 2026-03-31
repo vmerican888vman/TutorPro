@@ -1,5 +1,5 @@
 import { useParams, Link, Navigate } from 'react-router-dom'
-import SEO from '../components/SEO'
+import SEOHead from '../components/blog/SEOHead'
 import { blogPosts } from '../data/blog/index'
 
 function TableOfContents({ content }) {
@@ -73,27 +73,14 @@ export default function BlogPost() {
     .filter((p) => p.id !== post.id && p.category === post.category)
     .slice(0, 3)
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: post.title,
-    description: post.description,
-    author: { '@type': 'Organization', name: 'TutorPro.ai' },
-    publisher: {
-      '@type': 'Organization',
-      name: 'TutorPro.ai',
-      url: 'https://tutorpro.ai',
-    },
-    datePublished: post.publishedAt,
-    mainEntityOfPage: `https://tutorpro.ai/blog/${post.slug}`,
-  }
-
   return (
     <>
-      <SEO
+      <SEOHead
         title={post.title}
         description={post.description}
-        path={`/blog/${post.slug}`}
+        url={`https://tutorpro.ai/blog/${post.slug}`}
+        type="article"
+        publishedAt={post.publishedAt}
       />
 
       <article style={{
@@ -242,11 +229,6 @@ export default function BlogPost() {
           </div>
         )}
 
-        {/* JSON-LD */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
       </article>
 
       {/* Blog content styles */}
