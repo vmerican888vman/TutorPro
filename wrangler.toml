@@ -1,0 +1,8 @@
+# Cloudflare Pages: once this file is present with pages_build_output_dir, Pages uses it
+# as the source of truth for the build output folder (not the dashboard value).
+# `name` must match your Workers & Pages project name (alphanumeric + dashes). If a deploy
+# fails with a project name error, run: npx wrangler pages download config <exact-name>
+# and merge, or fix `name` here to match the dashboard.
+name = "tutorpro"
+pages_build_output_dir = "./dist"
+compatibility_date = "2026-03-31"
