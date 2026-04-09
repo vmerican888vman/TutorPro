@@ -1,6 +1,6 @@
 import { useParams, Link, Navigate } from 'react-router-dom'
 import SEOHead from '../components/blog/SEOHead'
-import { blogPosts } from '../data/blog/index'
+import blogPosts from '../data/blog/generated.json'
 
 function TableOfContents({ content }) {
   const headings = []

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import SEOHead from '../components/blog/SEOHead'
-import { blogPosts } from '../data/blog/index'
+import blogPosts from '../data/blog/generated.json'
 
 const categories = [
   { key: 'all', label: 'All Posts' },

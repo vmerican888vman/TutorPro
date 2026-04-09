@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/fetch-blog.mjs",
     "build": "vite build",
+    "fetch-blog": "node scripts/fetch-blog.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
