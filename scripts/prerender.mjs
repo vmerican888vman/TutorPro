@@ -124,10 +124,18 @@ async function main() {
   }
 
   // All captures done; safe to write to disk now.
+  // For non-root routes, write `<route>.html` (file form) rather than
+  // `<route>/index.html` (folder form). Cloudflare Pages 308-redirects
+  // `/foo` → `/foo/` when only the folder form exists, which creates a
+  // sitemap/canonical mismatch. File form is served at the exact URL.
   for (const [route, html] of captures) {
-    const outDir = route === '/' ? DIST : join(DIST, route)
-    mkdirSync(outDir, { recursive: true })
-    writeFileSync(join(outDir, 'index.html'), html)
+    if (route === '/') {
+      writeFileSync(join(DIST, 'index.html'), html)
+    } else {
+      const filePath = join(DIST, route + '.html')
+      mkdirSync(dirname(filePath), { recursive: true })
+      writeFileSync(filePath, html)
+    }
   }
 
   console.log(`[prerender] wrote ${captures.size}/${routes.length} routes (${failures} failed)`)
