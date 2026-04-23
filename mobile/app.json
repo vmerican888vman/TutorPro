@@ -1,0 +1,52 @@
+{
+  "expo": {
+    "name": "TutorPro.ai",
+    "slug": "tutorpro",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "scheme": "tutorpro",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#07070F"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "ai.tutorpro.app",
+      "buildNumber": "1"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#07070F"
+      },
+      "package": "ai.tutorpro.app",
+      "versionCode": 1
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      "expo-secure-store",
+      ["./plugins/withKotlinVersion", "1.9.25"]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "e37b82ab-956f-49b5-b536-3efd87522489"
+      },
+      "supabaseUrl": "https://bklnvxqhcjdsxyypwkws.supabase.co",
+      "supabaseAnonKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJrbG52eHFoY2pkc3h5eXB3a3dzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4OTk4NzIsImV4cCI6MjA5MjQ3NTg3Mn0.bh5VeV2zjxabzFF225wj2VomJEIYR47k6QkDlzMVgBE",
+      "router": {
+        "origin": false
+      }
+    },
+    "owner": "vmerican"
+  }
+}
